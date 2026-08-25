@@ -64,6 +64,7 @@ export class NodeResolver {
 
 		this.push(candidates, seen, DEFAULT_NODE_COMMAND);
 		this.push(candidates, seen, process.env.UNGATE_NODE_BIN);
+		this.push(candidates, seen, this.getEditorRuntime(binaryName));
 
 		if (process.platform === 'darwin') {
 			this.push(candidates, seen, '/opt/homebrew/bin/node');
@@ -105,6 +106,33 @@ export class NodeResolver {
 		this.pushFromDir(candidates, seen, path.join(homeDir, '.asdf', 'installs', 'nodejs'), binaryName);
 
 		return candidates;
+	}
+
+	/**
+	 * The Node runtime the editor is itself running on, but only when that runtime
+	 * is a plain `node` binary this extension is able to spawn.
+	 *
+	 * In a remote window — SSH, WSL, a dev container or Codespaces — the extension
+	 * host is forked from the editor server's own Node, which lives at
+	 * `~/.cursor-server/bin/<commit>/node` or the VS Code equivalent. That build
+	 * follows the editor's Node version rather than the machine's, so it carries a
+	 * supported ABI even on a host whose only system Node is too old to load our
+	 * native bindings. Without this candidate such a host has no usable runtime at
+	 * all, because `node` on PATH and every fixed system location below resolve to
+	 * that same too-old Node.
+	 *
+	 * A desktop window runs the extension host inside Electron instead, so there
+	 * `process.execPath` is the editor executable: spawning it would open a second
+	 * editor window instead of reporting an ABI. Comparing the file name against the
+	 * Node binary name keeps the Electron case out, and desktop installs go on
+	 * resolving through the system candidates.
+	 */
+	private static getEditorRuntime(binaryName: string): string | undefined {
+		if (path.basename(process.execPath) !== binaryName) {
+			return undefined;
+		}
+
+		return process.execPath;
 	}
 
 	private static push(candidates: string[], seen: Set<string>, candidate: string | undefined): void {

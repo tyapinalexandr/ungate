@@ -25,6 +25,17 @@ import { NodeResolver } from '../../src/utils/node-resolver';
 
 describe('NodeResolver', () => {
 	const originalPlatform = process.platform;
+	const originalExecPath = process.execPath;
+
+	/**
+	 * The `spawnSync` result `NodeResolver.inspect` parses for a single runtime, e.g.
+	 * runtimeReport('127', 'linux', 'x64') -> { stdout: '{"abi":"127","platform":"linux","arch":"x64"}', ... }
+	 */
+	const runtimeReport = (abi: string, platform: string, arch: string) => {
+		const stdout = JSON.stringify({ abi, platform, arch });
+
+		return { error: undefined, status: 0, stdout, stderr: '', pid: 1, output: [null, stdout, ''], signal: null };
+	};
 
 	beforeEach(() => {
 		spawnSyncMock.mockReset();
@@ -34,6 +45,7 @@ describe('NodeResolver', () => {
 
 	afterEach(() => {
 		Object.defineProperty(process, 'platform', { value: originalPlatform });
+		Object.defineProperty(process, 'execPath', { value: originalExecPath });
 	});
 
 	it('returns a supported override path when UNGATE_NODE_BIN is provided via resolve argument', () => {
@@ -120,6 +132,44 @@ describe('NodeResolver', () => {
 		});
 
 		expect(NodeResolver.resolve()).toBe(supportedNode);
+	});
+
+	it('falls back to the editor server Node when every system Node has an unsupported ABI', () => {
+		Object.defineProperty(process, 'platform', { value: 'linux' });
+
+		// A remote window forks its extension host from the editor server's own Node.
+		const editorServerNode = '/home/dev/.cursor-server/bin/2fdd31c9/node';
+
+		Object.defineProperty(process, 'execPath', { value: editorServerNode });
+
+		existsSyncMock.mockReturnValue(false);
+		readdirSyncMock.mockReturnValue([]);
+		spawnSyncMock.mockImplementation((command) => {
+			if (command === editorServerNode) {
+				return runtimeReport('127', 'linux', 'x64');
+			}
+
+			// Every system location on this host is the distro's Node 20, which has no prebuild.
+			return runtimeReport('115', 'linux', 'x64');
+		});
+
+		expect(NodeResolver.resolve()).toBe(editorServerNode);
+	});
+
+	it('never inspects the editor executable when the extension host runs inside Electron', () => {
+		Object.defineProperty(process, 'platform', { value: 'linux' });
+
+		// A desktop window reports the editor binary itself, which must not be spawned.
+		const editorExecutable = '/opt/cursor/cursor';
+
+		Object.defineProperty(process, 'execPath', { value: editorExecutable });
+
+		existsSyncMock.mockReturnValue(false);
+		readdirSyncMock.mockReturnValue([]);
+		spawnSyncMock.mockReturnValue(runtimeReport('115', 'linux', 'x64'));
+
+		expect(() => NodeResolver.resolve()).toThrow('No supported Node runtime found');
+		expect(spawnSyncMock).not.toHaveBeenCalledWith(editorExecutable, expect.anything(), expect.anything());
 	});
 
 	it('rejects an unsupported explicit override', () => {
