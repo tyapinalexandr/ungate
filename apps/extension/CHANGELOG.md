@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.7.12 - 2026-08-26
+
+- Verify SHA-256 checksums for all native binary downloads (`cloudflared`, `better-sqlite3`, `sqlite3`) before execution
+- Fix API server failing to start in Docker/Remote-SSH containers by accepting the editor's Node executable as a runtime candidate
+- Fix selecting unsupported Node runtimes (e.g. Node 23) when a compatible Node version is available
+
 ## 1.7.11 - 2026-08-16
 
 - Fix 400 on long chats by clamping Codex tool call IDs to 64 characters and keeping call/output pairs paired
