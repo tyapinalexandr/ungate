@@ -4,40 +4,20 @@ interface ModelPricing {
 }
 
 const MODEL_PRICING: Record<string, ModelPricing> = {
+	// OpenAI GPT-6 (current) + Terra still on 5.6
 	'gpt-6-astra': { inputPerMTok: 10.0, outputPerMTok: 50.0 },
-	'claude-opus-5': { inputPerMTok: 5.0, outputPerMTok: 25.0 },
-	'claude-sonnet-5': { inputPerMTok: 2.0, outputPerMTok: 10.0 },
-	'claude-fable-5-1': { inputPerMTok: 10.0, outputPerMTok: 50.0 },
-	'claude-fable-5': { inputPerMTok: 10.0, outputPerMTok: 50.0 },
-	'MiniMax-M3': { inputPerMTok: 0.5, outputPerMTok: 1.5 },
-	'MiniMax-M2.7': { inputPerMTok: 0.5, outputPerMTok: 1.5 },
-	'MiniMax-M2.5': { inputPerMTok: 0.5, outputPerMTok: 1.5 },
-	'MiniMax-M2.1': { inputPerMTok: 0.5, outputPerMTok: 1.5 },
-	'MiniMax-M2': { inputPerMTok: 0.5, outputPerMTok: 1.5 },
-	'gpt-5.6-sol': { inputPerMTok: 5.0, outputPerMTok: 30.0 },
+	'gpt-6-sol': { inputPerMTok: 2.0, outputPerMTok: 10.0 },
+	'gpt-6-luna': { inputPerMTok: 0.1, outputPerMTok: 0.5 },
 	'gpt-5.6-terra': { inputPerMTok: 2.5, outputPerMTok: 15.0 },
-	'gpt-5.6-luna': { inputPerMTok: 1.0, outputPerMTok: 6.0 },
-	'gpt-5.6': { inputPerMTok: 5.0, outputPerMTok: 30.0 },
 
-	'claude-opus-4-8': { inputPerMTok: 5.0, outputPerMTok: 25.0 },
-	'claude-opus-4-7': { inputPerMTok: 5.0, outputPerMTok: 25.0 },
-	'claude-opus-4-6': { inputPerMTok: 5.0, outputPerMTok: 25.0 },
-	'claude-opus-4-5': { inputPerMTok: 5.0, outputPerMTok: 25.0 },
-	'claude-opus-4-1': { inputPerMTok: 15.0, outputPerMTok: 75.0 },
-	'claude-opus-4': { inputPerMTok: 15.0, outputPerMTok: 75.0 },
-
-	'claude-sonnet-4-6': { inputPerMTok: 3.0, outputPerMTok: 15.0 },
-	'claude-sonnet-4-5': { inputPerMTok: 3.0, outputPerMTok: 15.0 },
-	'claude-sonnet-4': { inputPerMTok: 3.0, outputPerMTok: 15.0 },
-
+	// Claude current lineup (Anthropic, Sep 2026)
+	'claude-opus-5-5': { inputPerMTok: 4.0, outputPerMTok: 20.0 },
+	'claude-fable-5-1': { inputPerMTok: 10.0, outputPerMTok: 50.0 },
+	'claude-sonnet-5': { inputPerMTok: 2.0, outputPerMTok: 10.0 },
 	'claude-haiku-4-5': { inputPerMTok: 1.0, outputPerMTok: 5.0 },
 
-	'claude-3-5-sonnet': { inputPerMTok: 3.0, outputPerMTok: 15.0 },
-	'claude-3-5-haiku': { inputPerMTok: 0.8, outputPerMTok: 4.0 },
-
-	'claude-3-opus': { inputPerMTok: 15.0, outputPerMTok: 75.0 },
-	'claude-3-sonnet': { inputPerMTok: 3.0, outputPerMTok: 15.0 },
-	'claude-3-haiku': { inputPerMTok: 0.25, outputPerMTok: 1.25 }
+	// MiniMax
+	'MiniMax-M3': { inputPerMTok: 0.5, outputPerMTok: 1.5 }
 };
 
 const DEFAULT_PRICING: ModelPricing = { inputPerMTok: 3.0, outputPerMTok: 15.0 };

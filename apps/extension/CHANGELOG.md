@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.7.12-hardened.4 - 2026-09-24
+
+- Freshest models only: GPT-6 Astra/Sol/Luna, GPT-5.6 Terra, Claude Opus 5.5 / Sonnet 5 / Fable 5.1 / Haiku 4.5, MiniMax M3
+- Drop superseded GPT-5.6 Sol/Luna, Claude Opus 5 and 4.x/3.x seeds, older MiniMax M2.x (drizzle `_0010`)
+
 ## 1.7.12-hardened.3 - 2026-09-24
 
 - Seed current models: Claude Opus/Sonnet/Fable 5.x, GPT-6 Astra, MiniMax M3/M2.7/M2.5 (drizzle _0008/_0009)

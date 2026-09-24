@@ -169,48 +169,15 @@ const PROVIDER_OPTIONS: ProviderOption[] = [
 // Dated variants are the actual stored names for 4.5 models.
 const MODEL_LABELS: Record<string, string> = {
 	'gpt-6-astra': 'GPT-6 Astra',
-	'claude-opus-5': 'Claude Opus 5',
+	'gpt-6-sol': 'GPT-6 Sol',
+	'gpt-6-luna': 'GPT-6 Luna',
+	'gpt-5.6-terra': 'GPT-5.6 Terra',
+	'claude-opus-5-5': 'Claude Opus 5.5',
 	'claude-sonnet-5': 'Claude Sonnet 5',
 	'claude-fable-5-1': 'Claude Fable 5.1',
-	'claude-fable-5': 'Claude Fable 5',
-	'MiniMax-M3': 'MiniMax M3',
-	'MiniMax-M2.7': 'MiniMax M2.7',
-	'MiniMax-M2.7-highspeed': 'MiniMax M2.7 Highspeed',
-	'MiniMax-M2.5': 'MiniMax M2.5',
-	'MiniMax-M2.5-highspeed': 'MiniMax M2.5 Highspeed',
-	'MiniMax-M2.1': 'MiniMax M2.1',
-	'MiniMax-M2': 'MiniMax M2',
-	// GPT-5.6 OpenAI series
-	'gpt-5.6': 'GPT-5.6',
-	'gpt-5.6-sol': 'GPT-5.6 Sol',
-	'gpt-5.6-terra': 'GPT-5.6 Terra',
-	'gpt-5.6-luna': 'GPT-5.6 Luna',
-	// 4.8 series (used as-is)
-	'claude-opus-4-8': 'Claude Opus 4.8',
-	// 4.7 series (used as-is)
-	'claude-opus-4-7': 'Claude Opus 4.7',
-	// 4.6 series (used as-is)
-	'claude-opus-4-6': 'Claude Opus 4.6',
-	'claude-sonnet-4-6': 'Claude Sonnet 4.6',
-	// 4.5 series — dated variants (these are what normalizeModelName actually stores)
-	'claude-opus-4-5-20251101': 'Claude Opus 4.5',
-	'claude-sonnet-4-5-20250929': 'Claude Sonnet 4.5',
+	'claude-haiku-4-5': 'Claude Haiku 4.5',
 	'claude-haiku-4-5-20251001': 'Claude Haiku 4.5',
-	// 4 series (legacy)
-	'claude-opus-4': 'Claude Opus 4',
-	'claude-sonnet-4': 'Claude Sonnet 4',
-	'claude-haiku-4': 'Claude Haiku 4',
-	// 3.5 series
-	'claude-opus-3-5': 'Claude Opus 3.5',
-	'claude-sonnet-3-5': 'Claude Sonnet 3.5',
-	'claude-haiku-3-5': 'Claude Haiku 3.5',
-	// 3 series
-	'claude-opus-3': 'Claude Opus 3',
-	'claude-sonnet-3': 'Claude Sonnet 3',
-	'claude-haiku-3': 'Claude Haiku 3',
-	// MiniMax
-	'MiniMax-Lite': 'MiniMax Lite',
-	MiniMax: 'MiniMax'
+	'MiniMax-M3': 'MiniMax M3'
 };
 
 // Pretty-print a raw model name.

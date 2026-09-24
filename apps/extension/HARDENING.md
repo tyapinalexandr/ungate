@@ -1,6 +1,6 @@
-# Ungate 1.7.12-hardened.3
+# Ungate 1.7.12-hardened.4
 
-Sideload-only hardening fork for Alexander. Not pushed upstream.
+Sideload-only hardening fork for Alexander (`tyapinalexandr/ungate`).
 
 ## Security (from .1 / .2)
 
@@ -11,18 +11,18 @@ Sideload-only hardening fork for Alexander. Not pushed upstream.
 5. Strong proxy key: `randomBytes(32).toString('base64url')`.
 6. Webview API base `http://127.0.0.1:<port>` (not `localhost` / `::1`).
 
-## Models (.3)
+## Models (.4)
 
-Seeded via drizzle `_0008` + `_0009` (INSERT OR IGNORE — preserves user custom rows):
+Migration `_0010` refreshes the active catalog and deletes superseded rows from existing DBs.
 
-**OpenAI / Codex:** GPT-6 Astra (`gpt-6-astra`) as `ungate-astra-*` Cursor-safe IDs (medium/high/xhigh/max + priority/fast variants). Keeps existing GPT-5.6 Sol/Terra/Luna.
+**OpenAI / Codex:** GPT-6 Astra, GPT-6 Sol, GPT-6 Luna (`ungate-*-*` Cursor-safe IDs). Terra remains `gpt-5.6-terra` (OpenAI has no gpt-6-terra). Removed GPT-5.6 Sol/Luna.
 
-**Claude:** Opus 5, Sonnet 5, Fable 5.1 (+ reasoning tiers). Keeps Opus/Sonnet 4.x and Haiku 4.5 from earlier migrations.
+**Claude:** Opus 5.5, Sonnet 5, Fable 5.1, Haiku 4.5. Removed Opus 5 and all 4.x/3.x seeds.
 
-**MiniMax:** M3, M2.7 (+ highspeed), M2.5 (+ highspeed), M2.1, M2 — first time seeded into DB (previously README-only).
+**MiniMax:** M3 only.
 
-IDs taken from Anthropic / OpenAI / MiniMax docs (Sep 2026) and upstream `feat/gpt-6-astra`.
+IDs from OpenAI / Anthropic docs (2026-09-24).
 
 ## Install
 
-Uninstall previous hardened build → Install from VSIX → reload. Existing DBs pick up new models on API start (migration). Copy new model IDs into Cursor custom models.
+Uninstall previous hardened build → Install from VSIX → reload. Existing DBs migrate on API start. Copy new model IDs into Cursor custom models.
