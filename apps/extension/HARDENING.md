@@ -1,4 +1,4 @@
-# Ungate 1.7.12-hardened.4
+# Ungate 1.7.99
 
 Sideload-only hardening fork for Alexander (`tyapinalexandr/ungate`).
 

@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.7.99 - 2026-09-24
+
+- Version bump above Open VSX `1.7.12` so Cursor stops offering a marketplace update (`1.7.12-hardened.*` is semver-older than `1.7.12`)
+- Same hardened.4 catalog and security patches
+
 ## 1.7.12-hardened.4 - 2026-09-24
 
 - Freshest models only: GPT-6 Astra/Sol/Luna, GPT-5.6 Terra, Claude Opus 5.5 / Sonnet 5 / Fable 5.1 / Haiku 4.5, MiniMax M3
