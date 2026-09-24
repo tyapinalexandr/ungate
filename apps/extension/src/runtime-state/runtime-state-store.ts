@@ -194,7 +194,7 @@ export class RuntimeStateStore {
 
 	private static async isApiPortHealthy(port: number): Promise<boolean> {
 		try {
-			const response = await fetch(`http://localhost:${port}/health`, {
+			const response = await fetch(`http://127.0.0.1:${port}/health`, {
 				signal: AbortSignal.timeout(config.apiServer.portHealthRequestTimeoutMs)
 			});
 

@@ -4,6 +4,16 @@ interface ModelPricing {
 }
 
 const MODEL_PRICING: Record<string, ModelPricing> = {
+	'gpt-6-astra': { inputPerMTok: 10.0, outputPerMTok: 50.0 },
+	'claude-opus-5': { inputPerMTok: 5.0, outputPerMTok: 25.0 },
+	'claude-sonnet-5': { inputPerMTok: 2.0, outputPerMTok: 10.0 },
+	'claude-fable-5-1': { inputPerMTok: 10.0, outputPerMTok: 50.0 },
+	'claude-fable-5': { inputPerMTok: 10.0, outputPerMTok: 50.0 },
+	'MiniMax-M3': { inputPerMTok: 0.5, outputPerMTok: 1.5 },
+	'MiniMax-M2.7': { inputPerMTok: 0.5, outputPerMTok: 1.5 },
+	'MiniMax-M2.5': { inputPerMTok: 0.5, outputPerMTok: 1.5 },
+	'MiniMax-M2.1': { inputPerMTok: 0.5, outputPerMTok: 1.5 },
+	'MiniMax-M2': { inputPerMTok: 0.5, outputPerMTok: 1.5 },
 	'gpt-5.6-sol': { inputPerMTok: 5.0, outputPerMTok: 30.0 },
 	'gpt-5.6-terra': { inputPerMTok: 2.5, outputPerMTok: 15.0 },
 	'gpt-5.6-luna': { inputPerMTok: 1.0, outputPerMTok: 6.0 },

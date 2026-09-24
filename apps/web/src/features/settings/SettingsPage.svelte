@@ -63,7 +63,9 @@ function currentValues(): Partial<AppSettings> {
 		models: cloneModels(models)
 	};
 
-	values.apiKey = apiKey.trim() || null;
+	if (apiKey.trim()) {
+		values.apiKey = apiKey.trim();
+	}
 	values.extraInstruction = extraInstruction.trim() || null;
 
 	return values;
@@ -74,6 +76,10 @@ function validateBeforeSave(): string | null {
 
 	if (!Number.isInteger(parsedPort) || parsedPort < 1 || parsedPort > 65535) {
 		return 'Port must be an integer between 1 and 65535.';
+	}
+
+	if (!apiKey.trim()) {
+		return 'Proxy API key cannot be empty.';
 	}
 
 	for (const model of models) {

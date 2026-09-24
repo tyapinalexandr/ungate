@@ -168,6 +168,18 @@ const PROVIDER_OPTIONS: ProviderOption[] = [
 // Labels map — exact model names from DB (after normalizeModelName).
 // Dated variants are the actual stored names for 4.5 models.
 const MODEL_LABELS: Record<string, string> = {
+	'gpt-6-astra': 'GPT-6 Astra',
+	'claude-opus-5': 'Claude Opus 5',
+	'claude-sonnet-5': 'Claude Sonnet 5',
+	'claude-fable-5-1': 'Claude Fable 5.1',
+	'claude-fable-5': 'Claude Fable 5',
+	'MiniMax-M3': 'MiniMax M3',
+	'MiniMax-M2.7': 'MiniMax M2.7',
+	'MiniMax-M2.7-highspeed': 'MiniMax M2.7 Highspeed',
+	'MiniMax-M2.5': 'MiniMax M2.5',
+	'MiniMax-M2.5-highspeed': 'MiniMax M2.5 Highspeed',
+	'MiniMax-M2.1': 'MiniMax M2.1',
+	'MiniMax-M2': 'MiniMax M2',
 	// GPT-5.6 OpenAI series
 	'gpt-5.6': 'GPT-5.6',
 	'gpt-5.6-sol': 'GPT-5.6 Sol',

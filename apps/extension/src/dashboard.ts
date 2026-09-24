@@ -3,6 +3,7 @@ import * as path from 'node:path';
 
 import * as vscode from 'vscode';
 
+import { config } from './runtime-state/config';
 import { SharedLogStore } from './runtime-state/shared-log-store';
 import { LogRingBuffer } from './utils/log-ring-buffer';
 
@@ -102,6 +103,7 @@ export class Dashboard {
 
 	sendInitialState(tunnelState: TunnelState): void {
 		this.sendPort();
+		this.sendApiKey();
 		this.sendBufferedLogs('api');
 		this.sendBufferedLogs('tunnel');
 		this.panel?.webview.postMessage({ type: 'tunnel-status', state: tunnelState });
@@ -180,6 +182,7 @@ export class Dashboard {
 
 	private sendPort(): void {
 		this.panel?.webview.postMessage({ type: 'port', port: this.currentPort });
+		this.sendApiKey();
 	}
 
 	private rebuildHtml(): void {
@@ -237,6 +240,28 @@ export class Dashboard {
 		this.tunnelLogFileOffset = fileSize;
 	}
 
+	private readProxyApiKey(): string | null {
+		try {
+			const keyPath = config.paths.proxyApiKeyPath;
+			if (!fs.existsSync(keyPath)) {
+				return null;
+			}
+			const key = fs.readFileSync(keyPath, 'utf8').trim();
+
+			return key || null;
+		} catch {
+			return null;
+		}
+	}
+
+	private sendApiKey(): void {
+		const apiKey = this.readProxyApiKey();
+		if (!apiKey) {
+			return;
+		}
+		this.panel?.webview.postMessage({ type: 'api-key', apiKey });
+	}
+
 	private buildHtml(): string {
 		const distPath = this.getWebDistPath();
 		const assetsUri = this.panel!.webview.asWebviewUri(vscode.Uri.file(path.join(distPath, 'assets')));
@@ -247,9 +272,10 @@ export class Dashboard {
 		html = html.replace(/src="\/assets\//g, `src="${assetsUri.toString()}/`);
 		html = html.replace(/href="\/assets\//g, `href="${assetsUri.toString()}/`);
 		html = html.replace('href="/favicon.png"', `href="${faviconUri.toString()}"`);
+		const apiKeyJson = JSON.stringify(this.readProxyApiKey() ?? '');
 		html = html.replace(
 			'</head>',
-			`<script>window.__PORT__ = ${this.currentPort}; window.__TS__ = ${Date.now()};</script>\n\t</head>`
+			`<script>window.__PORT__ = ${this.currentPort}; window.__API_KEY__ = ${apiKeyJson}; window.__TS__ = ${Date.now()};</script>\n\t</head>`
 		);
 
 		return html;
