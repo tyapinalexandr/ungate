@@ -10,7 +10,7 @@ import { config } from './runtime-state/config';
 import { BetterSqlite3Installer } from './utils/better-sqlite3-installer';
 import { NodeResolver } from './utils/node-resolver';
 
-const HEALTH_CHECK_URL = (port: number) => `http://localhost:${port}/health`;
+const HEALTH_CHECK_URL = (port: number) => `http://127.0.0.1:${port}/health`;
 const STARTING_STATE_TIMEOUT_MS = 10000;
 
 interface ApiServerCallbacks {

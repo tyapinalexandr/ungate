@@ -29,7 +29,8 @@ const ModelMappingUpdateSchema = z
 const SettingsUpdateSchema = z
 	.object({
 		port: z.number().int().min(1).max(65535).optional(),
-		apiKey: z.union([z.string(), z.null()]).optional(),
+		// Hardened: never accept null/empty — clearing the proxy key is forbidden
+		apiKey: z.string().min(1).optional(),
 		quiet: z.boolean().optional(),
 		extraInstruction: z.union([z.string(), z.null()]).optional(),
 		models: z.array(ModelMappingUpdateSchema).optional()
@@ -50,6 +51,7 @@ function validateSettingsUpdate(payload: unknown): { ok: true; value: Partial<Ap
 }
 
 const plugin: FastifyPluginCallback = (app) => {
+	// Authenticated via global onRequest hook (except /health and OAuth browser callback).
 	app.get('/settings', async (_request, reply) => {
 		const settings = Settings.get();
 
@@ -65,7 +67,12 @@ const plugin: FastifyPluginCallback = (app) => {
 			return reply.code(400).send({ ok: false, error: validation.error });
 		}
 
-		Settings.update(validation.value);
+		try {
+			Settings.update(validation.value);
+		} catch (error) {
+			const message = error instanceof Error ? error.message : String(error);
+			return reply.code(400).send({ ok: false, error: message });
+		}
 
 		return reply.send({ ok: true });
 	});

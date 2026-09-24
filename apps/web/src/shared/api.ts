@@ -7,13 +7,17 @@ import {
 	type TokenSeriesPoint
 } from '@ungate/shared/frontend';
 
+type UngateWindow = Window & { __PORT__?: number | null; __API_KEY__?: string | null };
+
 export class Api {
-	private static port: number | null = (window as unknown as { __PORT__?: number | null }).__PORT__ ?? null;
+	private static port: number | null = (window as UngateWindow).__PORT__ ?? null;
+	private static apiKey: string | null = (window as UngateWindow).__API_KEY__ ?? null;
 	private static readonly portWaiters = new Set<(port: number) => void>();
+	private static readonly apiKeyWaiters = new Set<(apiKey: string) => void>();
 
 	static {
 		window.addEventListener('message', (event: MessageEvent) => {
-			const message = event.data as { type?: string; port?: number | null };
+			const message = event.data as { type?: string; port?: number | null; apiKey?: string | null };
 
 			if (message.type === 'port') {
 				this.port = message.port ?? null;
@@ -26,11 +30,22 @@ export class Api {
 					this.portWaiters.clear();
 				}
 			}
+
+			if (message.type === 'api-key' && typeof message.apiKey === 'string' && message.apiKey.trim()) {
+				this.apiKey = message.apiKey.trim();
+				(window as UngateWindow).__API_KEY__ = this.apiKey;
+
+				for (const resolve of this.apiKeyWaiters) {
+					resolve(this.apiKey);
+				}
+
+				this.apiKeyWaiters.clear();
+			}
 		});
 	}
 
 	private static async getPort(): Promise<number> {
-		const injected = (window as unknown as { __PORT__?: number | null }).__PORT__;
+		const injected = (window as UngateWindow).__PORT__;
 
 		if (injected) {
 			return injected;
@@ -59,15 +74,55 @@ export class Api {
 		return port;
 	}
 
+	private static async getApiKey(): Promise<string> {
+		const injected = (window as UngateWindow).__API_KEY__;
+		if (injected?.trim()) {
+			this.apiKey = injected.trim();
+		}
+
+		if (this.apiKey?.trim()) {
+			return this.apiKey.trim();
+		}
+
+		const apiKey = await new Promise<string>((resolve, reject) => {
+			const resolveWithCleanup = (nextKey: string) => {
+				this.apiKeyWaiters.delete(resolveWithCleanup);
+				resolve(nextKey);
+			};
+
+			this.apiKeyWaiters.add(resolveWithCleanup);
+
+			void sleep(5000)
+				.then(() => {
+					this.apiKeyWaiters.delete(resolveWithCleanup);
+					reject(new Error('Ungate proxy API key is not available in the dashboard yet'));
+				})
+				.catch(() => {});
+		});
+
+		return apiKey;
+	}
+
+	private static async authHeaders(extra?: Record<string, string>): Promise<Record<string, string>> {
+		return {
+			Authorization: `Bearer ${await this.getApiKey()}`,
+			...extra
+		};
+	}
+
 	private static async baseUrl(): Promise<string> {
 		const port = await this.getPort();
 
-		return `http://localhost:${port}`;
+		// Prefer IPv4 loopback: API listens on 127.0.0.1 only. `localhost` may resolve to ::1
+		// in Chromium webviews and yield TypeError: Failed to fetch.
+		return `http://127.0.0.1:${port}`;
 	}
 
 	private static async get<T>(path: string): Promise<T> {
 		const baseUrl = await this.baseUrl();
-		const response = await fetch(`${baseUrl}${path}`);
+		const response = await fetch(`${baseUrl}${path}`, {
+			headers: await this.authHeaders()
+		});
 
 		if (!response.ok) {
 			throw new Error(`GET ${path} failed: ${response.status}`);
@@ -80,7 +135,7 @@ export class Api {
 		const baseUrl = await this.baseUrl();
 		const response = await fetch(`${baseUrl}${path}`, {
 			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
+			headers: await this.authHeaders({ 'Content-Type': 'application/json' }),
 			body: JSON.stringify(body ?? {})
 		});
 

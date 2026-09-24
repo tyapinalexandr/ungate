@@ -3,7 +3,11 @@
 WITH candidates(id, label, provider, upstream_model, reasoning_budget, service_tier, sort_offset) AS (
 	VALUES
 		('ungate-astra-medium', 'GPT-6 Astra Medium', 'openai', 'gpt-6-astra', 'medium', 'default', 1),
-		('ungate-astra-fast-medium', 'GPT-6 Astra Fast Medium', 'openai', 'gpt-6-astra', 'medium', 'priority', 2)
+		('ungate-astra-fast-medium', 'GPT-6 Astra Fast Medium', 'openai', 'gpt-6-astra', 'medium', 'priority', 2),
+		('ungate-astra-high', 'GPT-6 Astra High', 'openai', 'gpt-6-astra', 'high', 'default', 3),
+		('ungate-astra-fast-high', 'GPT-6 Astra Fast High', 'openai', 'gpt-6-astra', 'high', 'priority', 4),
+		('ungate-astra-xhigh', 'GPT-6 Astra XHigh', 'openai', 'gpt-6-astra', 'xhigh', 'default', 5),
+		('ungate-astra-max', 'GPT-6 Astra Max', 'openai', 'gpt-6-astra', 'max', 'default', 6)
 ),
 base_sort_order(value) AS (
 	SELECT COALESCE(MAX(sort_order), -1)

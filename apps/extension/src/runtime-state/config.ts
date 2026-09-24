@@ -8,7 +8,8 @@ export const config = {
 	paths: {
 		stateFilePath: path.join(baseDir, 'runtime-state.json'),
 		lockPath: path.join(baseDir, 'runtime-state.lock'),
-		sharedLogPath: path.join(baseDir, 'extension.log')
+		sharedLogPath: path.join(baseDir, 'extension.log'),
+		proxyApiKeyPath: path.join(baseDir, 'proxy-api-key')
 	},
 	runtimeState: {
 		// Max age for a client heartbeat before the window is considered stale.

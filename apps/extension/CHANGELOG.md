@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.7.12-hardened.3 - 2026-09-24
+
+- Seed current models: Claude Opus/Sonnet/Fable 5.x, GPT-6 Astra, MiniMax M3/M2.7/M2.5 (drizzle _0008/_0009)
+- Wire GPT-6 Astra Codex reasoning floor (min low) and pricing/analytics labels
+
+## 1.7.12-hardened.2 - 2026-09-24
+
+- Fix dashboard "Failed to fetch" (Analytics/Settings): allow CORS OPTIONS preflight without Bearer; register CORS before auth; use http://127.0.0.1 for webview API calls
+
+## 1.7.12-hardened.1 - 2026-09-24
+
+- Sideload hardening: bind API to 127.0.0.1, fail-closed proxy API key auth on all routes except /health and OpenAI OAuth callback
+- Stop unauthenticated /settings key leak; dashboard uses extension-injected Bearer key
+- Stronger proxy API key generation (32-byte base64url)
+
 ## 1.7.12 - 2026-08-26
 
 - Verify SHA-256 checksums for all native binary downloads (`cloudflared`, `better-sqlite3`, `sqlite3`) before execution

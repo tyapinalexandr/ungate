@@ -21,7 +21,6 @@ export class ResponsesBodyBuilder {
 		if (resolvedModel.model === 'gpt-6-astra' && (reasoningEffort === 'none' || reasoningEffort === 'minimal')) {
 			reasoningEffort = 'low';
 		}
-
 		const expandedInput = CodexInputUtils.expandInput(body.input);
 		const usedExpandedInput = expandedInput !== null;
 

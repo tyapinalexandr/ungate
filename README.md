@@ -112,7 +112,7 @@ If Cursor turns `OpenAI API Key` off on its own, Ungate can turn it back on auto
 ### Add Models
 
 1. In the `Models` section, copy the model IDs you want and add them as custom models in Cursor.
-2. If you use MiniMax, add `MiniMax-M2.7` as a custom model in Cursor.
+2. If you use MiniMax, add `MiniMax-M3` or `MiniMax-M2.7` as a custom model in Cursor.
 3. Select one of your custom models in Cursor and start chatting.
 
 ## Quick verification

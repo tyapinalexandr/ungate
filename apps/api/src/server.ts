@@ -8,6 +8,7 @@ const BODY_LIMIT_BYTES = 256 * 1024 * 1024;
 import { getConfig } from './config';
 import { getDb } from './database/index';
 import { Settings } from './database/settings';
+import { apiKeyAuth, isPublicApiPath } from './plugins/auth';
 import analyticsPlugin from './routes/analytics';
 import anthropicPlugin from './routes/anthropic';
 import authPlugin from './routes/auth';
@@ -25,6 +26,10 @@ export async function startServer(): Promise<void> {
 	const config = getConfig(settings);
 	setQuietMode(config.quietMode);
 
+	if (!config.apiKey) {
+		throw new Error('[ungate] Refusing to start: proxy API key is missing (fail-closed)');
+	}
+
 	const app = Fastify({ logger: false, bodyLimit: BODY_LIMIT_BYTES });
 	app.decorate('config', config);
 
@@ -40,8 +45,24 @@ export async function startServer(): Promise<void> {
 		done();
 	});
 
+	// CORS must be registered before auth so OPTIONS preflight from vscode-webview://
+	// gets Access-Control-* headers. Auth still skips OPTIONS explicitly.
 	globalThis.console.log('[startup] register cors...');
-	await app.register(cors, { origin: '*' });
+	await app.register(cors, {
+		origin: true,
+		methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+		allowedHeaders: ['Authorization', 'Content-Type', 'x-api-key'],
+		credentials: false
+	});
+
+	const requireApiKey = apiKeyAuth(config);
+	app.addHook('onRequest', async (request, reply) => {
+		if (isPublicApiPath(request.url)) {
+			return;
+		}
+
+		return requireApiKey(request, reply);
+	});
 
 	globalThis.console.log('[startup] register plugins...');
 	await app.register(healthPlugin);
@@ -52,8 +73,8 @@ export async function startServer(): Promise<void> {
 	await app.register(analyticsPlugin);
 	await app.register(settingsPlugin);
 
-	globalThis.console.log(`[startup] listen ${config.port}...`);
-	await app.listen({ port: config.port, host: '0.0.0.0' });
+	globalThis.console.log(`[startup] listen ${config.port} on 127.0.0.1...`);
+	await app.listen({ port: config.port, host: '127.0.0.1' });
 
 	// Always print port to stdout — extension parses this to detect the running port.
 	// Uses globalThis.console to bypass quiet mode.
